@@ -8,6 +8,7 @@
 		var defaults = {
 			wrapperClass: 'ui-select-wrap',
 			selectedClass: 's-selected',
+			includeActiveItem: false,
 			hideText: false,
 			onChange: undef,
 			showEvent: 'click',
@@ -27,7 +28,7 @@
 			*/
 			function hideOptions() {
 
-				self.find('ul').hide();
+				self.removeClass('s-active').find('ul').hide();
 				self.on(settings.showEvent, showOptions);
 
 			}
@@ -43,13 +44,17 @@
 
 				//self.on(settings.hideEvent, hideTooltip);
 				self.off(settings.showEvent);
-				self.find('ul').show();
+				self.addClass('s-active').find('ul').show();
 
 				self.on('click', '.' + settings.selectedClass, hideOptions);
 
 				self.on('click', 'li', function(e) {
 
 					var target = $(e.currentTarget);
+
+					if (settings.includeActiveItem === false) {
+						self.find('li').show().eq(target.index()).hide();
+					}
 
 					self.find('.' + settings.selectedClass).html(target.data('content'));
 
@@ -110,16 +115,23 @@
 
 				var ul = $('<ul>');
 
-				for (var i = 0, length = options.length, option; i < length; i++) {
-					option = $(options[i]);
-					ul.append($('<li />', {
+				for (var i = 0, length = options.length, option, li; i < length; i++) {
+
+					option = $(options[i]);					
+					li = $('<li />', {
 						data: {
 							value: option.attr('value'),
 							content: getContent(option),
 							text: option.text()
 						},
 						html: getContent(option)
-					}));
+					});
+
+					ul.append(li);
+
+					if (settings.includeActiveItem === false && i === selected.index()) {
+						li.hide();
+					}
 				}
 
 				wrapper.append(ul);
