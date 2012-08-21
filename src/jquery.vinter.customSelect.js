@@ -82,7 +82,7 @@
 			function getContent(option) {
 				var html = '';
 
-				if (option.data('img').length) {
+				if (option.data('img')) {
 					html += '<img src="' + option.data('img') + '" alt="' + option.text() + '" />';
 				}
 
