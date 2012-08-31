@@ -12,6 +12,8 @@
 			hideText: false,
 			onChange: undef,
 			onInit: undef,
+			onOpened: undef,
+			onClosed: undef,
 			showEvent: 'click',
 			hideEvent: 'click'
 		};
@@ -20,7 +22,8 @@
 
 		return this.each(function () {
 
-			var self = $(this);
+			var self, select = $(this);
+
 
 			/**
 			* Hide the options
@@ -29,8 +32,14 @@
 			*/
 			function hideOptions(e) {
 
+				var options = e.data.options;
+
 				self.removeClass('s-active').find('ul').hide();
-				self.on(settings.showEvent, { options: e.data.options }, showOptions);
+				self.on(settings.showEvent, { options: options }, showOptions);
+
+				if (typeof settings.onClosed === 'function') {
+					settings.onClosed(options);
+				}
 
 			}
 
@@ -46,21 +55,30 @@
 				self.off(settings.showEvent);
 				self.addClass('s-active').find('ul').show();
 
+				if (typeof settings.onOpened === 'function') {
+					settings.onOpened(options);
+				}
+
 				self.on('click', '.' + settings.selectedClass, {options: options}, hideOptions);
 
 				self.on('click', 'li', function(e) {
 
-					var target = $(e.currentTarget);
+					var target = $(e.currentTarget),
+							index = target.index();
 
 					if (settings.includeActiveItem === false) {
-						self.find('li').show().eq(target.index()).hide();
+						self.find('li').show().eq(index).hide();
 					}
 
 					self.find('.' + settings.selectedClass).html(target.data('content'));
 
 					if (typeof settings.onChange === 'function') {
-						settings.onChange(options[target.index()]);
+						settings.onChange(options[index]);
 					}
+
+					$(select)
+						.find('option').removeAttr('selected')
+						.eq(index).attr('selected', 'selected');
 
 					self.find('.' + settings.selectedClass).trigger('click');
 				});
@@ -83,9 +101,9 @@
 
 			function init() {
 				var wrapper = $('<div />').addClass(settings.wrapperClass);
-				var options = self.find('option');
+				var options = select.find('option');
 
-				var selected = self.find('option[selected]').length ? self.find('option[selected]').eq(0) : options.eq(0);
+				var selected = select.find('option[selected]').length ? select.find('option[selected]').eq(0) : options.eq(0);
 
 				wrapper.append($('<div />', {
 					'class': settings.selectedClass,
@@ -115,9 +133,9 @@
 
 				wrapper.append(ul);
 
-				// Set self to new custom select jQuery object
-				self.after(wrapper);
-				self.remove();
+				// Set select to new custom select jQuery object
+				select.after(wrapper);
+				select.hide();
 				self = wrapper;
 
 				self.on(settings.showEvent, { options: options }, showOptions);
