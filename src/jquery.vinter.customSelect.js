@@ -23,10 +23,10 @@
 			*
 			* @method hideOptions
 			*/
-			function hideOptions() {
+			function hideOptions(e) {
 
 				self.removeClass('s-active').find('ul').hide();
-				self.on(settings.showEvent, showOptions);
+				self.on(settings.showEvent, { options: e.data.options }, showOptions);
 
 			}
 
@@ -35,15 +35,14 @@
 			*
 			* @method showOptions
 			*/
-			function showOptions() {
+			function showOptions(e) {
 
-				var html, tooltip;
+				var html, tooltip, options = e.data.options;
 
-				//self.on(settings.hideEvent, hideTooltip);
 				self.off(settings.showEvent);
 				self.addClass('s-active').find('ul').show();
 
-				self.on('click', '.' + settings.selectedClass, hideOptions);
+				self.on('click', '.' + settings.selectedClass, {options: options}, hideOptions);
 
 				self.on('click', 'li', function(e) {
 
@@ -56,33 +55,12 @@
 					self.find('.' + settings.selectedClass).html(target.data('content'));
 
 					if (typeof settings.onChange === 'function') {
-						var option = $('<option />', {
-							selected: 'selected',
-							value: target.data('value'),
-							text: target.data('text')
-						});
-						settings.onChange(option[0]);
+						settings.onChange(options[target.index()]);
 					}
 
-					hideOptions();
+					self.find('.' + settings.selectedClass).trigger('click');
 				});
 
-			}
-
-			/**
-			* Hide the tooltip and restore the title attribute
-			*
-			* @method hideTooltip
-			*/
-			function hideTooltip() {
-
-				var title = self.data("original-title");
-
-				if (title.length > 0) {
-					self.attr("title", title);
-				}
-
-				self.find('.' + settings.tooltipClass).remove();
 			}
 
 			function getContent(option) {
@@ -138,7 +116,7 @@
 				self.remove();
 				self = wrapper;
 
-				self.on(settings.showEvent, showOptions);
+				self.on(settings.showEvent, { options: options }, showOptions);
 
 				if (typeof settings.onInit === 'function') {
 					settings.onInit(self, options);
