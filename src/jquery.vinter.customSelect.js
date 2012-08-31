@@ -7,6 +7,7 @@
 			includeActiveItem: false,
 			hideText: false,
 			onChange: undef,
+			onInit: undef,
 			showEvent: 'click',
 			hideEvent: 'click'
 		};
@@ -113,7 +114,7 @@
 
 				for (var i = 0, length = options.length, option, li; i < length; i++) {
 
-					option = $(options[i]);					
+					option = $(options[i]);
 					li = $('<li />', {
 						data: {
 							value: option.attr('value'),
@@ -138,6 +139,10 @@
 				self = wrapper;
 
 				self.on(settings.showEvent, showOptions);
+
+				if (typeof settings.onInit === 'function') {
+					settings.onInit(self, options);
+				}
 			}
 
 			init();
