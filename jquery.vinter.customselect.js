@@ -1,4 +1,4 @@
-/*! jquery.vinter.customSelect - v1.0.0 - 2012-08-31
+/*! jquery.vinter.customSelect - v1.0.0 - 2012-09-14
 * https://github.com/vinterab/jquery.vinter.customSelect/
 * Copyright (c) 2012 Vinter AB; Licensed MIT */
 
@@ -93,7 +93,7 @@
 				}
 
 				if (settings.hideText === false) {
-					html += option.text();
+					html += option.data('img') ? '<span>' + option.text() + '</span>' : option.text();
 				}
 
 				return html;

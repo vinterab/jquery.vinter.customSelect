@@ -89,7 +89,7 @@
 				}
 
 				if (settings.hideText === false) {
-					html += option.text();
+					html += option.data('img') ? '<span>' + option.text() + '</span>' : option.text();
 				}
 
 				return html;
