@@ -2,7 +2,7 @@
   "name": "jquery.vinter.customSelect",
   "title": "jquery.vinter.customSelect",
   "description": "A simple and lightweight jquery plugin for custom selects",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/vinterab/jquery.vinter.customSelect/",
   "author": {
     "name": "Vinter AB",
@@ -21,5 +21,10 @@
       "url": "https://github.com/vinterab/jquery.vinter.customSelect/blob/master/LICENSE-MIT"
     }
   ],
-  "keywords": ["jquery customSelect"]
+  "keywords": ["jquery customSelect"],
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-uglify": "~0.2.2"
+  }
 }
